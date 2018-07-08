@@ -1,0 +1,6 @@
+{
+  "web": {
+    "password": "sample",
+    "port": 3000
+  }
+}
