@@ -25,6 +25,31 @@
     <!-- Main -->
     <script src="./web/dist/bundle.js"></script>
 
+    <script>
+
+      const ws = new WebSocket("ws://localhost:3005")
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.includes('js_changed')) {
+          document.location.reload();
+          return;
+        }
+        if (data.includes('css_changed')) {
+          const queryString = `?reload=${new Date().getTime()}`;
+          Array.from(document.querySelectorAll('link[rel=stylesheet]')).forEach(link => {
+            const oldHref = link.getAttribute('href');
+            if (oldHref.indexOf('bundle') !== -1) {
+              setTimeout(() => {
+                link.setAttribute('href', oldHref.replace(/\?.*|$/, queryString));
+              }, 5);
+            }
+          })
+        }
+      };
+
+    </script>
+
+
   </body>
 
 </html>

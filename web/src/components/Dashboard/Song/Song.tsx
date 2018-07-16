@@ -25,7 +25,7 @@ class Song extends React.Component<SongProps> {
           <div className="icon material-icons">music_note</div>
         </div>
         <div className="content">
-          <div className="label">Tags</div>
+          <div className="label">Tags:</div>
           <div className="label">Length: {SongHelper.formatDuration(this.props.length)}</div>
         </div>
       </div>

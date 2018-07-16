@@ -1,33 +1,33 @@
 import json
-import http.server
-import os
-import socketserver
-import urllib.parse
+from functools import reduce
+from server.simple_server import SimpleServer
+from server.web_socket_server import WebSocketServer
 
 with open('config.json') as json_data_file:
     data = json.load(json_data_file)
 
-PORT = data['web']['port']
+HTTP_PORT = data['web']['port']
+WEB_SOCKET_PORT = 3005
 INDEX_FILE = 'index.html'
 
 
-class MyHandler(http.server.SimpleHTTPRequestHandler):
-    def do_GET(self):
-        parsed_params = urllib.parse.urlparse(self.path)
-        if os.access('.' + os.sep + parsed_params.path, os.R_OK):
-            http.server.SimpleHTTPRequestHandler.do_GET(self)
-        else:
-            self.send_response(200)
-            self.send_header('Content-Type', 'text/html')
-            self.end_headers()
-            with open(INDEX_FILE, 'rb') as fin:
-                self.copyfile(fin, self.wfile)
+def threads_alive(threads):
+    return reduce((lambda acc, current_thread: acc and current_thread.is_alive()), threads)
 
 
-Handler = MyHandler
+simpleServer = SimpleServer(HTTP_PORT, INDEX_FILE)
+webSocketServer = WebSocketServer(WEB_SOCKET_PORT)
 
-httpd = socketserver.TCPServer(("", PORT), Handler)
+thread_pool = [simpleServer, webSocketServer]
 
-print("Serving...")
+for thread in thread_pool:
+    thread.start()
 
-httpd.serve_forever()
+while threads_alive(thread_pool):
+    pass
+
+for thread in thread_pool:
+    if not thread.stopped():
+        thread.stop()
+
+print('Exiting...')
