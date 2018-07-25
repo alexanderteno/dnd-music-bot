@@ -1,7 +1,8 @@
-import socketserver
 import threading
 
-from server.request_handler import RequestHandler
+from socketserver import TCPServer
+
+from server.api.request_handler import RequestHandler
 
 
 class SimpleServer(threading.Thread):
@@ -19,6 +20,6 @@ class SimpleServer(threading.Thread):
         return self._stop_event.is_set()
 
     def run(self):
-        httpd = socketserver.TCPServer(("", self.port), RequestHandler)
+        httpd = TCPServer(("", self.port), RequestHandler)
         print("Simple server initialized...")
         httpd.serve_forever()

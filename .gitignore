@@ -4,3 +4,7 @@ web/node_modules
 web/dist/**
 
 server/__pycache__/
+
+music/**
+
+*.pyc
