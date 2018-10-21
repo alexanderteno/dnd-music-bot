@@ -1,0 +1,5 @@
+{
+    "token": "sample.token",
+    "adminRole": "Jukebox-Admin",
+    "prefix": "$"
+}
