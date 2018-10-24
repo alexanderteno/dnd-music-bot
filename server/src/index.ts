@@ -1,14 +1,14 @@
 import express from 'express';
 import * as bodyParser from 'body-parser';
 import { registerRoutes } from './routes';
-import client from './services/discordClient';
+import { interfaceManager } from './services/interfaceManager';
 import config from './config.json';
 
 const app = express();
 
 const port: number = parseInt(process.env.PORT) || 3000;
 
-client.login(config.token)
+interfaceManager.client.login(config.token)
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
