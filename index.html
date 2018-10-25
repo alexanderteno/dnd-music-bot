@@ -7,7 +7,7 @@
 
     <title>dnd-music-bot</title>
 
-    <link rel="stylesheet" href="./web/dist/bundle.css">
+    <link rel="stylesheet" href="./dist/web/bundle.css">
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Fredericka+the+Great" rel="stylesheet">
@@ -19,36 +19,11 @@
     <div id="root"></div>
 
     <!-- Dependencies -->
-    <script src="./web/node_modules/react/umd/react.development.js"></script>
-    <script src="./web/node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="./node_modules/react/umd/react.development.js"></script>
+    <script src="./node_modules/react-dom/umd/react-dom.development.js"></script>
 
     <!-- Main -->
-    <script src="./web/dist/bundle.js"></script>
-
-    <script>
-
-      const ws = new WebSocket("ws://localhost:3005")
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.includes('js_changed')) {
-          document.location.reload();
-          return;
-        }
-        if (data.includes('css_changed')) {
-          const queryString = `?reload=${new Date().getTime()}`;
-          Array.from(document.querySelectorAll('link[rel=stylesheet]')).forEach(link => {
-            const oldHref = link.getAttribute('href');
-            if (oldHref.indexOf('bundle') !== -1) {
-              setTimeout(() => {
-                link.setAttribute('href', oldHref.replace(/\?.*|$/, queryString));
-              }, 5);
-            }
-          })
-        }
-      };
-
-    </script>
-
+    <script src="./dist/web/bundle.js"></script>
 
   </body>
 

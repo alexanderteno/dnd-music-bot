@@ -1,8 +1,10 @@
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 import { Express } from 'express';
 import { songPlay, songsGet, songsPost } from './controllers/SongsController';
 import { playerStop, playerStatus } from './controllers/PlayerController';
 import { channelsGet, channelJoin } from './controllers/ChannelsController';
-import multer from 'multer';
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage });
@@ -27,6 +29,19 @@ const registerRoutes = (express: Express) => {
 
   express.route('/channels/:id/join')
     .post(channelJoin);
+
+  express.route('/')
+    .get((_, response) => {
+      response.sendFile(path.join(__dirname, '..', 'index.html'));
+    })
+
+  express.route('/*')
+    .get((request, response) => {
+      const myPath = path.join(__dirname, '..', request.path)
+      const exists = fs.existsSync(myPath)
+      console.log({ myPath, exists });
+      response.sendFile(myPath);
+    })
 
 };
 
