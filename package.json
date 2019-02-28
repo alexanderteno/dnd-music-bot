@@ -25,6 +25,7 @@
     "@types/react-router-dom": "^4.3.1",
     "awesome-typescript-loader": "^5.2.1",
     "body-parser": "^1.18.3",
+    "buffer-to-stream": "^1.0.0",
     "concurrently": "^4.0.1",
     "css-loader": "^1.0.0",
     "discord.js": "^11.4.2",

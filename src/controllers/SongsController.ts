@@ -1,10 +1,10 @@
+/// <reference path="../types/buffer-to-stream.d.ts"/>
 import { RequestHandler, Request, Response } from 'express';
-import Discord from 'discord.js';
 import { interfaceManager } from '../services/interfaceManager';
 import { getSongMetadata, insertSong, getSongs, getSong } from '../services/SqlService';
 import crypto from 'crypto';
 import SongModel from '../web/models/SongModel';
-import * as Sorcery from 'streamifier';
+import toStream from 'buffer-to-stream';
 
 const songsGet: RequestHandler = (_: Request, response: Response): void => {
   getSongs()
@@ -39,24 +39,31 @@ const songsPost: RequestHandler = (request: Request, response: Response): void =
 
 const songPlay: RequestHandler = (request: Request, response: Response): void => {
   const songId = parseInt(request.params.songId);
-  console.log({ songId });
   if (isNaN(songId)) {
     response.json({ error: `Invalid songId: ${request.params.songId}` });
     response.status(400);
     return;
   }
-  interfaceManager.client.voiceConnections.forEach((voiceConnection: Discord.VoiceConnection) => {
-    console.log({ voiceConnection });
+  const voiceConnection = interfaceManager.client.voiceConnections.first();
+
+  if (voiceConnection) {
     getSong(songId)
-      .then((result: SongModel) => {
-        voiceConnection.playStream()
+      .then((song: SongModel) => {
+        const readable = toStream(song.songData);
+        const streamDispatcher = voiceConnection.playStream(readable);
+        interfaceManager.streamService.addStream(streamDispatcher);
+        response.json({ message: `Playback of songId: ${songId} has begun` })
+      })
+      .catch((err) => {
+        console.log({ err });
+        response.status(500);
+        response.json(err);
       });
-    // const content = `E:\\Projects\\dnd-music-bot\\server\\src\\music\\sample-0${request.params.songId}.mp3`;
-    // const streamDispatcher = voiceConnection.playFile(content);
-    // interfaceManager.streamService.addStream(streamDispatcher);
-  });
-  response.status(500)
-  response.json({ error: `Unable to play requested songId: ${songId}` });
+  } else {
+    response.status(500)
+    response.json({ error: `Unable to play requested songId: ${songId}` });
+  }
+
 }
 
 export {

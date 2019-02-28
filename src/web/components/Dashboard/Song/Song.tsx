@@ -1,7 +1,8 @@
 import React from 'react';
 import Icon from '../../General/Icon';
-import SongModel from '../../../model/SongModel';
 import SongsService from '../../../../services/WebApi/SongsService';
+import PlayerService from '../../../../services/WebApi/PlayerService';
+import SongModel from '../../../models/SongModel';
 import './Song.scss';
 
 interface SongProps extends SongModel {
@@ -14,7 +15,7 @@ class Song extends React.Component<SongProps> {
   }
 
   private handleStopRequest = () => {
-    console.log('Stop Event');
+    PlayerService.postStop();
   }
 
   render() {

@@ -1,13 +1,21 @@
-import SongModel from '../../web/model/SongModel';
+import WebConstants from '../../constants/WebConstants';
 
 export default class PlayerService {
 
-    static stop = async (): Promise<null | SongModel[]> => {
-        return Promise.reject('Not yet implemented');
+    static postStop = async (): Promise<void> => {
+        fetch(`${WebConstants.API_URL}/player/stop`, {
+            method: 'POST',
+        })
+            .then((result) => {
+                console.log(result);
+            });
     }
 
-    static status = async (): Promise<any> => {
-        return Promise.reject('Not yet implemented');
+    static getStatus = async (): Promise<any> => {
+        return fetch(`${WebConstants.API_URL}/player/status`)
+            .then((response) => {
+                return response.json();
+            });
     }
 
 }

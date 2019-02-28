@@ -1,4 +1,5 @@
 import { StreamDispatcher } from 'discord.js'
+import { Readable } from 'stream';
 
 class StreamService {
 
@@ -18,6 +19,7 @@ class StreamService {
 
   stopAll = () => {
     this.streamDispatchers.forEach((streamDispatcher: StreamDispatcher) => {
+      streamDispatcher.stream.destroy();
       streamDispatcher.end('Forced');
     })
   }

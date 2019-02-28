@@ -3,7 +3,6 @@ class SongHelper {
   static formatDuration(value: number) {
 
     const hours = Math.floor(value / 60 / 60);
-    console.log(hours);
     const minutes = Math.floor((value - (hours * 60)) / 60);
     const seconds = Math.floor(value % 60);
 

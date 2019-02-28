@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Loading from '../General/Loading';
 import SongsService from '../../../services/WebApi/SongsService';
-import SongModel from '../../model/SongModel';
 import Song from '../Dashboard/Song/Song';
+import SongModel from '../../models/SongModel';
 
 interface SongState {
     songs?: SongModel[];

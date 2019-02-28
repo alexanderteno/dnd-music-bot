@@ -77,10 +77,14 @@ const getSong = (songId: number) => {
       'SELECT * FROM songs WHERE songId=?',
       songId,
       (err: MysqlError | null, results?: any) => {
+        console.log({ err, results })
         if (err) {
           reject(err);
         } else {
-          resolve(results);
+          if (results.length > 1) {
+            reject('Err: Multiple results found');
+          }
+          resolve(results[0]);
         }
       }
     )

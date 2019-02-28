@@ -9,6 +9,7 @@ import Songs from './Songs/Songs';
 import Icon from './General/Icon';
 import ChannelSwitcher from './ChannelSwitcher/ChannelSwitcher';
 import './App.scss';
+import PlayerService from '../../services/WebApi/PlayerService';
 
 const NAV_OPTOINS = [
   ['/', 'Dashboard'],
@@ -39,11 +40,19 @@ const Navigation = () => {
   )
 }
 
+const getStatus = () => {
+  PlayerService.getStatus()
+    .then((result: any) => {
+      console.log({result});
+    })
+}
+
 export const App = () => (
   <Router history={applicationHistory.history}>
     <div className="app">
       <Navigation />
       <div className="fixed">
+        <button onClick={getStatus}>Get Player Status</button>
         <ChannelSwitcher />
       </div>
       <div className="content">
