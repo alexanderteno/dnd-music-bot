@@ -1,14 +1,22 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 import Song from './Song/Song';
 import './Dashboard.scss';
 
-const Dashboard = () => (
-  <div className="dashboard page">
-    <h1>Dashboard</h1>
-    <div className="songs">
-      <Song {...require('./mockSong.json')}/>
-    </div>
-  </div>
-);
+class Dashboard extends Component {
+
+  componentDidMount() {
+    document.title = "Dashboard"
+  }
+
+  render() {
+    return (
+      <div className="dashboard page">
+        <div className="songs">
+          <Song {...require('./mockSong.json')} />
+        </div>
+      </div>
+    );
+  }
+}
 
 export default Dashboard;

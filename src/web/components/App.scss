@@ -1,35 +1,40 @@
 .app {
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  justify-content: flex-start;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background: url("../assets/background.jpg") no-repeat center center;
-  background-size: cover;
-
-  .content {
-
-    width: 1280px;
-    margin: 0 auto;
-    box-sizing: border-box;
-
-    .page {
-      background-color: rgba(white, 0.8);
-      border-radius: 5px;
-      padding: 5px;
+    background: url("../assets/background.jpg") no-repeat center center;
+    background-size: cover;
+    .navigation {
+        font-size: 1rem;
+        background-color: rgba(black, 0.8);
+        color: white;
+        .title-bar {
+            cursor: pointer;
+            display: flex;
+            flex-direction: row;
+            justify-content: left;
+            align-items: center;
+            div {
+                padding: 1rem;
+            }
+        }
+        .nav-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            .nav-option {
+                padding: 1rem;
+                color: white;
+                text-decoration: none;
+                &.active {
+                    font-weight: bold;
+                }
+            }
+        }
     }
-
-  }
-
-  @media only screen and (max-width: 1300px) {
-
-    div.content {
-      width: 100%;
-      padding: 0 10px;
+    .fixed,
+    .content {
+        width: 100%;
+        padding: 1rem;
+        box-sizing: border-box;
     }
-
-  }
-
+    .fixed {
+        padding-bottom: unset;
+    }
 }

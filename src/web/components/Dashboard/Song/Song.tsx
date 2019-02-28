@@ -1,32 +1,37 @@
-import * as React from 'react';
+import React from 'react';
+import Icon from '../../General/Icon';
+import SongModel from '../../../model/SongModel';
+import SongsService from '../../../../services/WebApi/SongsService';
 import './Song.scss';
-import SongHelper from '../../Utilities/SongHelper';
 
-interface SongProps {
-  name: string,
-  length: number,
-  bpm?: number,
-  ext?: string
+interface SongProps extends SongModel {
 }
 
 class Song extends React.Component<SongProps> {
 
+  private handlePlayRequest = (_: React.SyntheticEvent) => {
+    SongsService.postPlay(this.props.songId);
+  }
+
+  private handleStopRequest = () => {
+    console.log('Stop Event');
+  }
+
   render() {
 
     return (
-      <div className="song card">
+      <div className="song">
         <div className="header">
-          <div className="title">
-            <div className="name">
-              {this.props.name}
-            </div>
-            {!!this.props.ext && (<div className="ext">{this.props.ext}</div>)}
-          </div>
-          <div className="icon material-icons">music_note</div>
+          <div className="name" title={`Song Id: ${this.props.songId}`}>{this.props.songName}</div>
+          <Icon>music_note</Icon>
         </div>
-        <div className="content">
-          <div className="label">Tags:</div>
-          <div className="label">Length: {SongHelper.formatDuration(this.props.length)}</div>
+        <div className="details">
+          <div className="title">Details:</div>
+        </div>
+        <div className="preview">
+          <div className="title">Playback:</div>
+          <Icon className="button" onClick={this.handlePlayRequest}>play_arrow</Icon>
+          <Icon className="button" onClick={this.handleStopRequest}>stop</Icon>
         </div>
       </div>
     );

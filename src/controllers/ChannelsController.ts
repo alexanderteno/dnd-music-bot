@@ -11,6 +11,16 @@ const channelsGet: RequestHandler = (_: Request, response: Response): void => {
   response.json(channels);
 }
 
+const channelsGetActive: RequestHandler = (_: Request, response: Response): void => {
+  const voiceConnection = interfaceManager.client.voiceConnections.first();
+  if (voiceConnection) {
+    const currentChannel = voiceConnection.channel;
+    response.json({ id: currentChannel.id, status: 'established' });
+  } else {
+    response.json({ id: undefined, status: 'no-connection' });
+  }
+}
+
 const channelJoin: RequestHandler = (request: Request, response: Response): void => {
   const channel = interfaceManager.client.channels.get(request.params.id) as Discord.VoiceChannel;
   channel.join()
@@ -21,8 +31,8 @@ const channelJoin: RequestHandler = (request: Request, response: Response): void
       response.status(500).json(err)
     })
 }
-
 export {
   channelsGet,
-  channelJoin
+  channelsGetActive,
+  channelJoin,
 }

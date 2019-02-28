@@ -50,7 +50,6 @@ const getSongMetadata = (signature: string): Promise<void | any> => {
 
 const insertSong = (signature: string, file: Express.Multer.File) => {
   return new Promise((resolve, reject) => {
-
     const connection = createConnection();
     connection.query(
       'INSERT INTO songs SET ?',
@@ -68,12 +67,30 @@ const insertSong = (signature: string, file: Express.Multer.File) => {
       }
     )
     connection.end();
+  })
+}
 
+const getSong = (songId: number) => {
+  return new Promise((resolve, reject) => {
+    const connection = createConnection();
+    connection.query(
+      'SELECT * FROM songs WHERE songId=?',
+      songId,
+      (err: MysqlError | null, results?: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      }
+    )
+    connection.end();
   })
 }
 
 export {
   getSongMetadata,
   insertSong,
-  getSongs
+  getSong,
+  getSongs,
 }

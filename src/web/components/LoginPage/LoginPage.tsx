@@ -12,6 +12,10 @@ class LoginPage extends React.Component<{}, { loginFailed: boolean, password: st
     };
   }
 
+  componentDidMount() {
+    document.title = "Login"
+  }
+
   onSubmit = (event: React.MouseEvent<HTMLFormElement>) => {
     authentication.authenticate(this.state.password)
       .then(() => {
@@ -26,7 +30,7 @@ class LoginPage extends React.Component<{}, { loginFailed: boolean, password: st
   };
 
   onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({password: event.target.value});
+    this.setState({ password: event.target.value });
   };
 
   render() {
@@ -34,8 +38,8 @@ class LoginPage extends React.Component<{}, { loginFailed: boolean, password: st
       <div className="login page">
         <form onSubmit={this.onSubmit}>
           <label htmlFor="password">Password:</label>
-          <input name="password" type="password" id="password" onChange={this.onChange}/>
-          <input type="submit" value="Login"/>
+          <input name="password" type="password" id="password" onChange={this.onChange} />
+          <input type="submit" value="Login" />
         </form>
         {
           this.state.loginFailed && (<div className="error">Password was incorrect, please try again.</div>)

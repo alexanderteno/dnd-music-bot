@@ -1,28 +1,34 @@
 .song {
-  grid-column: span 3;
-  background-color: white;
-
-  .header .title {
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    .ext {
-      margin-left: 6px;
-      font-size: 10px;
-      opacity: 0.55;
-
-      &:before {
-        content: "(";
-      }
-
-      &:after {
-        content: ")";
-      }
-
+    background-color: rgba(white, 0.8);
+    &+.song {
+        margin-top: 1rem;
     }
-
-  }
-
+    .header {
+        background-color: var(--header-color-background);
+        color: var(--header-color-text);
+        display: grid;
+        grid-template-columns: 1fr 56px;
+        .name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 1rem;
+        }
+    }
+    .details,
+    .preview {
+        padding: 1rem 1rem 0 1rem;
+        display: grid;
+        grid-template-areas: "title title" "play stop";
+        .icon {
+            padding: 1rem;
+        }
+    }
+    .title {
+        grid-area: title;
+    }
+    .button {
+        padding: 1rem;
+        cursor: pointer;
+    }
 }

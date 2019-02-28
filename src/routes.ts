@@ -4,44 +4,65 @@ import fs from 'fs';
 import { Express } from 'express';
 import { songPlay, songsGet, songsPost } from './controllers/SongsController';
 import { playerStop, playerStatus } from './controllers/PlayerController';
-import { channelsGet, channelJoin } from './controllers/ChannelsController';
+import { channelsGet, channelJoin, channelsGetActive } from './controllers/ChannelsController';
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage });
+const whitelist = ['node_modules', 'dist']
+const indexFilePath = path.join(__dirname, '..', 'index.html');
 
 const registerRoutes = (express: Express) => {
 
-  express.route('/songs')
+  express.route('/api/songs')
     .get(songsGet)
     .post(upload.single('song'), songsPost);
 
-  express.route('/songs/:songId/play')
+  express.route('/api/songs/:songId/play')
     .post(songPlay);
 
-  express.route('/player/stop')
+  express.route('/api/player/stop')
     .post(playerStop);
 
-  express.route('/player/status')
+  express.route('/api/player/status')
     .get(playerStatus);
 
-  express.route('/channels')
+  express.route('/api/channels')
     .get(channelsGet);
 
-  express.route('/channels/:id/join')
+  express.route('/api/channels/active')
+    .get(channelsGetActive);
+
+  express.route('/api/channels/:id/join')
     .post(channelJoin);
+
+  express.route('/favicon.ico')
+    .get((_, response) => {
+      response.sendFile(path.join(__dirname, '..', 'favicon.ico'));
+    });
 
   express.route('/')
     .get((_, response) => {
-      response.sendFile(path.join(__dirname, '..', 'index.html'));
+      response.sendFile(indexFilePath);
     })
 
   express.route('/*')
     .get((request, response) => {
-      const myPath = path.join(__dirname, '..', request.path)
-      const exists = fs.existsSync(myPath)
-      console.log({ myPath, exists });
-      response.sendFile(myPath);
-    })
+      const rootDir = request.path.replace(/^\/?([A-Za-z_]+).*$/g, '$1')
+      if (whitelist.includes(rootDir)) {
+        const myPath = path.join(__dirname, '..', request.path)
+        const fileExists = fs.existsSync(myPath)
+        if (fileExists) {
+          response.sendFile(myPath);
+          return;
+        }
+      }
+      const isFileRequest = request.path.lastIndexOf('.') !== -1;
+      if (isFileRequest) {
+        response.status(404);
+        return;
+      }
+      response.sendFile(indexFilePath);
+    });
 
 };
 

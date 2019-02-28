@@ -1,11 +1,4 @@
 :root {
-  --header-color-background: #26282a;
+  --header-color-background: rgba(0, 0, 0, 0.8);
   --header-color-text: white;
-}
-
-.header {
-  font-size: 14px;
-  font-weight: 500;
-  background-color: var(--header-color-background);
-  color: var(--header-color-text);
 }
