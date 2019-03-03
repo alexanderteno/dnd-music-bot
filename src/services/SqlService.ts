@@ -77,7 +77,6 @@ const getSong = (songId: number) => {
       'SELECT * FROM songs WHERE songId=?',
       songId,
       (err: MysqlError | null, results?: any) => {
-        console.log({ err, results })
         if (err) {
           reject(err);
         } else {

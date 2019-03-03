@@ -4,12 +4,15 @@
         "sourceMap": true,
         "noImplicitAny": true,
         "module": "commonjs",
-        "target": "es6",
+        "target": "es2016",
         "jsx": "react",
         "resolveJsonModule": true,
         "esModuleInterop": true
     },
     "include": [
         "./src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
     ]
 }

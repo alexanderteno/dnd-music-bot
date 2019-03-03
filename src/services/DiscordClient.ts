@@ -22,7 +22,7 @@ const commands: Record<string, MessageHandler> = {
     });
   },
   play: (message: Discord.Message) => {
-    streamService.stopAll();
+    streamService.stopStream();
     const [, , temp] = message.content.split(' ');
     const content = `E:\\Projects\\dnd-music-bot\\server\\src\\music\\sample-${temp}.mp3`;
     joinChannel(message.member)
@@ -32,7 +32,7 @@ const commands: Record<string, MessageHandler> = {
       });
   },
   stop: () => {
-    streamService.stopAll();
+    streamService.stopStream();
   }
 };
 

@@ -3,26 +3,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    .header {
+    .channels {
         width: 100%;
-        display: grid;
-        cursor: pointer;
-        grid-template-columns: 56px 1fr 56px;
-        background-color: var(--header-color-background);
-        color: var(--header-color-text);
-        .title {
-            padding: 1rem;
-        }
-    }
-    .content {
-        background-color: rgba(white, 0.8);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        .channels {
-            width: 100%;
-           
-        }
     }
 }

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import ChannelModel from '../../models/ChannelModel';
-import Loading from '../General/Loading';
-import './ChannelSwitcher.scss';
-import Icon from '../General/Icon';
 import ChannelService from '../../../services/WebApi/ChannelService';
 import Channel from './Channel';
+import Container from '../General/Container';
+import './ChannelSwitcher.scss';
 
 interface ChannelSwitcherState {
-    collapsed: boolean;
     channels: ChannelModel[] | undefined;
     activeChannel?: string;
 }
@@ -17,7 +15,6 @@ export default class ChannelSwitcher extends Component<{}, ChannelSwitcherState>
     constructor(props: {}) {
         super(props);
         this.state = {
-            collapsed: true,
             channels: undefined,
         }
     }
@@ -42,39 +39,28 @@ export default class ChannelSwitcher extends Component<{}, ChannelSwitcherState>
             })
     }
 
-    private toggleCollapse = () => {
-        this.setState((prevState) => ({
-            ...prevState,
-            collapsed: !prevState.collapsed,
-        }))
-    }
-
     render() {
         return (
-            <div className="channel-switcher">
-                <div className="header" onClick={this.toggleCollapse}>
-                    <Icon>{this.state.collapsed ? 'expand_more' : 'expand_less'}</Icon>
-                    <div className="title">Channels</div>
-                    <Icon>web</Icon>
-                </div>
-                {!this.state.collapsed && (<div className="content">
+            <Container
+                className="channel-switcher"
+                title="Channels"
+                collapsible={true}
+                iconLigature="web"
+                loading={this.state.channels === undefined}
+            >
+                <div className="channels">
                     {
-                        this.state.channels ? (
-                            <div className="channels">
-                                {
-                                    this.state.channels.map((channel: ChannelModel) => (
-                                        <Channel
-                                            key={channel.id}
-                                            {...channel}
-                                            activeChannel={this.state.activeChannel}
-                                            joinChannel={this.joinChannel}
-                                        />
-                                    ))
-                                }
-                            </div>
-                        ) : (<Loading />)}
-                </div>)}
-            </div>
+                        this.state.channels && this.state.channels.map((channel: ChannelModel) => (
+                            <Channel
+                                key={channel.id}
+                                {...channel}
+                                activeChannel={this.state.activeChannel}
+                                joinChannel={this.joinChannel}
+                            />
+                        ))
+                    }
+                </div>
+            </Container>
         )
     }
 
