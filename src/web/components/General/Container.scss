@@ -1,5 +1,7 @@
 .container {
-    margin-bottom: 1rem;
+    &+.container {
+        margin-top: 1rem;
+    }
     .header {
         width: 100%;
         display: grid;
@@ -8,6 +10,9 @@
         color: var(--header-color-text);
         .title {
             padding: 1rem;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
         }
         &.collapsible {
             cursor: pointer;

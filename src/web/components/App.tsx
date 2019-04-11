@@ -21,9 +21,9 @@ export const App = () => (
       </div>
       <div className="content">
         <Switch>
-          <Route path="/login" exact={true} component={LoginPage} />
-          <PrivateRoute path="/" exact={true} component={Dashboard} />
-          <PrivateRoute path="/songs" exact={true} component={Songs} />
+          {/* <Route path="/login" exact={true} component={LoginPage} /> */}
+          <Route path="/" exact={true} component={Dashboard} />
+          <Route path="/songs" exact={true} component={Songs} />
         </Switch>
       </div>
     </div>

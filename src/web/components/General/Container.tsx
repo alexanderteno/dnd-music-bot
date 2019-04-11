@@ -7,9 +7,34 @@ interface ContainerProps {
     title: string;
     collapsible?: boolean
     className?: string;
-    children: JSX.Element;
+    children: JSX.Element | JSX.Element[];
     iconLigature?: string;
     loading?: boolean;
+    handleTitleChange?: (e: React.FormEvent<HTMLDivElement>) => void;
+}
+
+const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    console.log('doing the thing');
+    const range = document.createRange();
+    range.selectNodeContents(e.currentTarget);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+}
+
+const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    switch (e.key) {
+        case 'Enter':
+            e.preventDefault();
+            e.currentTarget.blur();
+        default:
+            return;
+    }
+}
+
+const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+    e.currentTarget.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
 }
 
 const Container = (props: ContainerProps) => {
@@ -27,7 +52,18 @@ const Container = (props: ContainerProps) => {
         <div className={defaultClasses.concat(classes).join(' ')}>
             <div className={'header' + (props.collapsible ? ' collapsible' : '')} onClick={headerOnClick}>
                 {props.collapsible && (<Icon>{collapsed ? 'expand_more' : 'expand_less'}</Icon>)}
-                <div className="title" style={titleStyle}>{props.title}</div>
+                <div
+                    className="title"
+                    style={titleStyle}
+                    suppressContentEditableWarning={true}
+                    contentEditable={!!props.handleTitleChange}
+                    onClick={!!props.handleTitleChange ? handleClick : undefined}
+                    onInput={props.handleTitleChange}
+                    onBlur={handleBlur}
+                    onKeyDown={handleKeyDown}
+                >
+                    {props.title}
+                </div>
                 {(props.iconLigature !== undefined) && (<Icon>{props.iconLigature}</Icon>)}
             </div>
             {

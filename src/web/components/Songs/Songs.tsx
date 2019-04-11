@@ -3,12 +3,13 @@ import Loading from '../General/Loading';
 import SongsService from '../../../services/WebApi/SongsService';
 import Song from '../Dashboard/Song/Song';
 import SongModel from '../../models/SongModel';
+import { cloneDeep } from 'lodash'
 
-interface SongState {
+interface SongsState {
     songs?: SongModel[];
 }
 
-export default class Songs extends Component<{}, SongState> {
+export default class Songs extends Component<{}, SongsState> {
 
     constructor(props: {}) {
         super(props);
@@ -31,9 +32,26 @@ export default class Songs extends Component<{}, SongState> {
                 {
                     this.state.songs ?
                         <>
-                            {this.state.songs.map((song: SongModel) => (
-                                <Song key={song.signature} {...song} />
-                            ))}
+                            {
+                                this.state.songs.map((song: SongModel, index: number) => {
+                                    const updateSong = (song: SongModel) => {
+                                        this.setState((prevState: SongsState) => {
+                                            const nextSongs = cloneDeep(prevState.songs);
+                                            nextSongs[index] = song;
+                                            return {
+                                                songs: nextSongs,
+                                            };
+                                        })
+                                    }
+                                    return (
+                                        <Song
+                                            key={song.signature}
+                                            updateSong={updateSong}
+                                            {...song}
+                                        />
+                                    )
+                                })
+                            }
                         </> :
                         (<Loading />)
                 }

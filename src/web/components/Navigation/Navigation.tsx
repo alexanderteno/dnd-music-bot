@@ -5,7 +5,7 @@ import './Navigation.scss';
 
 const NAV_OPTOINS = [
     ['/', 'Dashboard'],
-    ['/login', 'Login'],
+    // ['/login', 'Login'],
     ['/songs', 'Songs'],
 ]
 

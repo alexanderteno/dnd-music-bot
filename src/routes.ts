@@ -2,7 +2,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { Express } from 'express';
-import { songPlay, songsGet, songsPost } from './controllers/SongsController';
+import SongsController from './controllers/SongsController';
 import PlayerController from './controllers/PlayerController';
 import { channelsGet, channelJoin, channelsGetActive } from './controllers/ChannelsController';
 
@@ -15,10 +15,12 @@ const registerRoutes = (express: Express) => {
 
   /* Songs Actions */
   express.route('/api/songs')
-    .get(songsGet)
-    .post(upload.single('song'), songsPost);
+    .get(SongsController.songsGet)
+    .post(upload.single('song'), SongsController.songsPost);
+  express.route('/api/songs/:songId')
+    .put(SongsController.putSong);
   express.route('/api/songs/:songId/play')
-    .post(songPlay);
+    .post(SongsController.songPlay);
 
   /* Player Actions */
   express.route('/api/player/stop')
