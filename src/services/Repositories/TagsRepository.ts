@@ -1,6 +1,4 @@
 import { createConnection } from "../SqlService";
-import SongModel from "../../web/models/SongModel";
-import TagModel from "../../web/models/TagModel";
 import SongTagModel from "../../web/models/SongTagModel";
 
 class TagsRepository {
