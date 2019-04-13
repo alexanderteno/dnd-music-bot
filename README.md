@@ -6,10 +6,10 @@
 |-----------|-------|
 |node       |10.12.0|
 |yarn       |1.10.1 |
-|mysql      |?      |
+|mysql      |8.0.12 |
 
 ## commands
 
-`yarn run dev` - Should start the server (if pre-requisites have been met*)
+`yarn start` - Should start the server (if pre-requisites have been met*)
 
 *If pre-requisites haven't been met, try `yarn install`
