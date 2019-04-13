@@ -39,7 +39,9 @@ class SongTags extends Component<SongTagsProps, SongTagsState> {
         <label className="input-label">Tags:</label>
         {
           tags ? (
-            <div className="input-control">Temp</div>
+            <div className="input-control">
+              <input type="text"></input>
+            </div>
           ) : <Loading />
         }
       </>

@@ -10,6 +10,7 @@ import ChannelSwitcher from './ChannelSwitcher/ChannelSwitcher';
 import VolumeSlider from './VolumeSlider/VolumeSlider';
 import Navigation from './Navigation/Navigation';
 import './App.scss';
+import AutoSuggest from './General/AutoSuggest';
 
 export const App = () => (
   <Router history={applicationHistory.history}>
@@ -26,6 +27,7 @@ export const App = () => (
           <Route path="/songs" exact={true} component={Songs} />
         </Switch>
       </div>
+      <AutoSuggest<string> getLabel={(suggestion: string) => suggestion} suggestions={["Algeria", "Alaska", "Canada", "Camaroon"]} onSelect={(suggestion) => { }} />
     </div>
   </Router>
 );
