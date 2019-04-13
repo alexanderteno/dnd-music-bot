@@ -140,4 +140,11 @@ table {
 body {
     font-family: 'Montserrat', sans-serif;
     height: 100vh;
+    h2 {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    h3 {
+        font-style: italic;
+    }
 }

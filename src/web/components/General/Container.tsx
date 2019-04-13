@@ -15,7 +15,6 @@ interface ContainerProps {
 
 const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log('doing the thing');
     const range = document.createRange();
     range.selectNodeContents(e.currentTarget);
     const sel = window.getSelection();

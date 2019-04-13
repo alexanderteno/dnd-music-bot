@@ -2,17 +2,36 @@
     &+.song {
         margin-top: 1rem;
     }
-    .details,
+
+    .details {
+        width: 100%;
+
+        .controls {
+            display: grid;
+            grid-template-columns: 7rem 1fr;
+
+            .input-label {
+                margin-bottom: 0.5rem;
+                font-style: italic;
+            }
+
+        }
+    }
+
     .preview {
+        width: 100%;
         display: grid;
         grid-template-areas: "title title" "play stop";
+
         .title {
             grid-area: title;
         }
+
         .icon {
             padding: 1rem 1rem 0 1rem;
         }
     }
+
     .button {
         padding: 1rem;
         cursor: pointer;

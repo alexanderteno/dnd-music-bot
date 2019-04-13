@@ -1,10 +1,10 @@
 /// <reference path="../types/buffer-to-stream.d.ts"/>
 import { RequestHandler, Request, Response } from 'express';
 import { interfaceManager } from '../services/interfaceManager';
-import { SongsRepository } from '../services/SqlService';
 import crypto from 'crypto';
 import SongModel from '../web/models/SongModel';
 import toStream from 'buffer-to-stream';
+import SongsRepository from '../services/Repositories/SongsRepository';
 
 export default class SongsController {
 
@@ -19,7 +19,6 @@ export default class SongsController {
   }
 
   static putSong: RequestHandler = (request: Request, response: Response): void => {
-    const songId = parseInt(request.params.songId);
     SongsRepository.updateSong(request.body.song)
       .then((song) => {
         response.json(song);

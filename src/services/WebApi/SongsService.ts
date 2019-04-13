@@ -1,5 +1,6 @@
 import WebConstants from '../../constants/WebConstants';
 import SongModel from '../../web/models/SongModel';
+import TagModel from '../../web/models/TagModel';
 
 export default class SongsService {
 
@@ -7,7 +8,14 @@ export default class SongsService {
         return fetch(`${WebConstants.API_URL}/songs`)
             .then((response) => {
                 return response.json();
-            })
+            });
+    }
+
+    static getTagsBySongId = async (songId: number): Promise<TagModel[]> => {
+        return fetch(`${WebConstants.API_URL}/songs/${songId}/tags`)
+            .then((response) => {
+                return response.json();
+            });
     }
 
     static putSong = async (song: SongModel): Promise<null | SongModel> => {

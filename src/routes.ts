@@ -5,6 +5,7 @@ import { Express } from 'express';
 import SongsController from './controllers/SongsController';
 import PlayerController from './controllers/PlayerController';
 import { channelsGet, channelJoin, channelsGetActive } from './controllers/ChannelsController';
+import TagsController from './controllers/TagsController';
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage });
@@ -21,6 +22,9 @@ const registerRoutes = (express: Express) => {
     .put(SongsController.putSong);
   express.route('/api/songs/:songId/play')
     .post(SongsController.songPlay);
+
+  express.route('/api/songs/:songId/tags')
+    .get(TagsController.getTags);
 
   /* Player Actions */
   express.route('/api/player/stop')

@@ -1,19 +1,58 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Container from '../../General/Container';
 import Icon from '../../General/Icon';
 import SongsService from '../../../../services/WebApi/SongsService';
 import PlayerService from '../../../../services/WebApi/PlayerService';
 import SongModel from '../../../models/SongModel';
+import TagModel from '../../../models/TagModel';
+import Loading from '../../General/Loading';
 import { debounce } from 'lodash';
 import './Song.scss';
 
 const WAIT_TIME = 1000;
 
+interface SongTagsProps { songId: number }
+interface SongTagsState { tags: TagModel[] | undefined }
+
+class SongTags extends Component<SongTagsProps, SongTagsState> {
+
+  constructor(props: SongTagsProps) {
+    super(props);
+    this.state = {
+      tags: undefined,
+    }
+  }
+
+  componentDidMount() {
+    SongsService.getTagsBySongId(this.props.songId)
+      .then((tags: TagModel[]) => {
+        this.setState({ tags });
+      });
+  }
+
+  render() {
+
+    const { tags } = this.state;
+
+    return (
+      <>
+        <label className="input-label">Tags:</label>
+        {
+          tags ? (
+            <div className="input-control">Temp</div>
+          ) : <Loading />
+        }
+      </>
+    )
+  }
+
+}
+
 interface SongProps extends SongModel {
   updateSong: (song: SongModel) => void;
 }
 
-class Song extends React.Component<SongProps> {
+class Song extends Component<SongProps> {
 
   constructor(props: SongProps) {
     super(props);
@@ -54,7 +93,16 @@ class Song extends React.Component<SongProps> {
         handleTitleChange={this.handleTitleChange}
       >
         <div className="details">
-          <div className="title">Details:</div>
+          <h2>Details</h2>
+          <div className="controls">
+            <label className="input-label">Duration:</label>
+            <div className="input-control">TODO</div>
+            <label className="input-label">BPM:</label>
+            <div className="input-control">TODO</div>
+            <label className="input-label">Visualization:</label>
+            <div className="input-control">TODO</div>
+            <SongTags songId={this.props.songId} />
+          </div>
         </div>
         <div className="preview">
           <div className="title">Playback:</div>
