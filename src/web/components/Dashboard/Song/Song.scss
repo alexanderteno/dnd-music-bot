@@ -17,15 +17,63 @@
 
             .input-control {
                 position: relative;
-            }
 
+                &.tags {
+                    background: white;
+                    border: 1px solid rgba(black, 0.5);
+                    box-sizing: border-box;
+                    width: 100%;
+                    border-radius: 3px;
+
+                    .tag {
+                        background: lightskyblue;
+                        border-radius: 3px 0 0 3px;
+                        color: white;
+                        display: inline-block;
+                        height: 1.5rem;
+                        line-height: 1.5rem;
+                        padding: 0 1.25rem 0 0.5rem;
+                        position: relative;
+                        text-decoration: none;
+                        -webkit-transition: color 0.2s;
+                        margin: 0.5rem 1rem 0.5rem 0.5rem;
+
+                        &::after {
+                            background: white;
+                            border-bottom: 0.75rem solid transparent;
+                            border-left: 0.75rem solid lightskyblue;
+                            border-top: 0.75rem solid transparent;
+                            content: '';
+                            position: absolute;
+                            right: 0;
+                            top: 0;
+                        }
+
+                        &:hover {
+                            background-color: cornflowerblue;
+                            color: white;
+                        }
+
+                        &:hover::after {
+                            border-left-color: cornflowerblue;
+                        }
+
+                    }
+
+                    .auto-suggest {
+                        display: inline-block;
+                        width: 40px;
+                    }
+
+                }
+            }
         }
     }
 
     .preview {
         width: 100%;
         display: grid;
-        grid-template-areas: "title title" "play stop";
+        grid-template-areas: "title title""play stop";
 
         .title {
             grid-area: title;

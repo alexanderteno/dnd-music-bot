@@ -4,7 +4,7 @@ import TagsRepository from '../services/Repositories/TagsRepository';
 
 export default class TagsController {
 
-    static getTags: RequestHandler = (request: Request, response: Response) => {
+    static tagsGet: RequestHandler = (request: Request, response: Response) => {
 
         const songId = parseInt(request.params.songId);
 

@@ -7,6 +7,7 @@ const clamp = (value: number, min: number, max: number): number => {
 
 const KEYS = {
     ENTER: 13,
+    ESCAPE: 27,
     UP: 38,
     DOWN: 40,
 }
@@ -14,12 +15,14 @@ const KEYS = {
 interface AutoSuggestProps<T> {
     getLabel: (suggestion: T) => string;
     onSelect: (suggestion: T) => void;
-    suggestions?: T[]
+    fetchSuggestions?: () => Promise<T[]>;
     newSuggestion?: (label: string) => void;
-    fetchSuggestions?: () => void;
+    placeholder?: string;
+    suggestions?: T[]
 }
 
 interface AutoSuggestState<T> {
+    showSuggestions: boolean;
     suggestions: undefined | T[];
     filter: string;
     selectedIndex: number;
@@ -27,7 +30,7 @@ interface AutoSuggestState<T> {
 
 const filterSuggestions = <T extends {}>(suggestions: T[], filter: string, getLabel: (suggestion: T) => string): T[] => {
     if (!filter) {
-        return [];
+        return suggestions;
     } else {
         return suggestions.filter((suggestion: T) => {
             const label = getLabel(suggestion).toLowerCase();
@@ -46,9 +49,19 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
     constructor(props: AutoSuggestProps<T>) {
         super(props);
         this.state = {
+            showSuggestions: false,
             suggestions: undefined,
             filter: undefined,
             selectedIndex: -1,
+        }
+    }
+
+    componentDidMount() {
+        if (this.props.fetchSuggestions) {
+            this.props.fetchSuggestions()
+                .then((suggestions: T[]) => {
+                    this.setState({ suggestions });
+                });
         }
     }
 
@@ -58,26 +71,19 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
         });
     }
 
-    handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.keyCode == KEYS.DOWN) {
+    handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if ((e.keyCode === KEYS.UP) || e.keyCode === KEYS.DOWN) {
             this.setState((prevState, props) => {
                 const suggestions = getFilteredSuggestions(props, prevState);
-                const nextIndex = (prevState.selectedIndex + 1) % suggestions.length;
+                const delta = e.keyCode === KEYS.UP ? -1 : 1;
+                const nextIndex = ((prevState.selectedIndex + delta) + suggestions.length) % suggestions.length
+
                 return ({
                     ...prevState,
                     selectedIndex: clamp(nextIndex, 0, suggestions.length - 1),
                 });
             });
-        } else if (e.keyCode == KEYS.UP) {
-            this.setState((prevState, props) => {
-                const suggestions = getFilteredSuggestions(props, prevState);
-                const nextIndex = ((prevState.selectedIndex - 1) + suggestions.length) % suggestions.length;
-                return ({
-                    ...prevState,
-                    selectedIndex: clamp(nextIndex, 0, suggestions.length - 1),
-                });
-            });
-        } else if (e.keyCode == KEYS.ENTER) {
+        } else if (e.keyCode === KEYS.ENTER) {
             e.preventDefault();
             if (getFilteredSuggestions(this.props, this.state)) {
 
@@ -86,6 +92,8 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
                     this.props.newSuggestion(this.state.filter)
                 }
             }
+        } else if (e.keyCode === KEYS.ESCAPE) {
+            e.currentTarget.blur();
         }
     }
 
@@ -94,33 +102,60 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
         this.setState({ filter: filter ? filter.toLowerCase() : undefined });
     }
 
+    handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        const filter = e.currentTarget.value;
+        this.setState({
+            filter: filter ? filter : undefined,
+            showSuggestions: true,
+        });
+    }
+
+    handleBlur = (_: React.FocusEvent<HTMLInputElement>) => {
+        this.setState({
+            filter: undefined,
+            showSuggestions: false,
+        });
+    }
+
     render() {
 
         const filteredSuggestions = getFilteredSuggestions(this.props, this.state);
 
         return (
             <div className="auto-suggest">
-                <input type="text" onKeyDown={this.handleKeyDown} onInput={this.handleInput}></input>
-                <div className="items">
-                    {
-                        filteredSuggestions.map((suggestion: T, index: number) => {
-                            const label = this.props.getLabel(suggestion);
-                            const className = ['suggestion'];
-                            if (index === this.state.selectedIndex) {
-                                className.push('selected');
+                <input
+                    type="text"
+                    onKeyDown={this.handleKeyDown}
+                    onInput={this.handleInput}
+                    onBlur={this.handleBlur}
+                    onFocus={this.handleFocus}
+                    placeholder={this.props.placeholder}
+                />
+                {
+                    this.state.showSuggestions && (
+                        <div className="items">
+                            {
+                                filteredSuggestions.map((suggestion: T, index: number) => {
+                                    const label = this.props.getLabel(suggestion);
+                                    const className = ['suggestion'];
+                                    if (index === this.state.selectedIndex) {
+                                        className.push('selected');
+                                    }
+                                    return (
+                                        <div
+                                            className={className.join(' ')}
+                                            key={label}
+                                            onClick={() => this.makeSelection(suggestion)}
+                                            onMouseEnter={() => this.setState({ selectedIndex: index })}
+                                        >
+                                            {label}
+                                        </div>
+                                    );
+                                })
                             }
-                            return (
-                                <div
-                                    className={className.join(' ')}
-                                    key={label}
-                                    onClick={() => this.props.onSelect(suggestion)}
-                                >
-                                    {label}
-                                </div>
-                            );
-                        })
-                    }
-                </div>
+                        </div>
+                    )
+                }
             </div>
         );
     }

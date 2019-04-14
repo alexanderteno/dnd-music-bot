@@ -7,8 +7,9 @@ import SongModel from '../../../models/SongModel';
 import TagModel from '../../../models/TagModel';
 import Loading from '../../General/Loading';
 import { debounce } from 'lodash';
-import './Song.scss';
 import AutoSuggest from '../../General/AutoSuggest';
+import TagService from '../../../../services/WebApi/TagService';
+import './Song.scss';
 
 const WAIT_TIME = 1000;
 
@@ -31,20 +32,35 @@ class SongTags extends Component<SongTagsProps, SongTagsState> {
       });
   }
 
+  getTags = (): Promise<TagModel[]> => {
+    return TagService.getTags();
+  }
+
+  handleSelect = (tag: TagModel) => {
+    
+  }
+
   render() {
 
     const { tags } = this.state;
+    console.log({ tags });
 
     return (
       <>
         <label className="input-label">Tags:</label>
         {
-          tags ? (
-            <div className="input-control">
-              <AutoSuggest<string>
-                getLabel={(suggestion: string) => suggestion}
-                suggestions={["Algeria", "Alaska", "Canada", "Camaroon"]}
-                onSelect={(suggestion) => { }}
+          (tags !== undefined) ? (
+            <div className="input-control tags">
+              {
+                tags.map((tag: TagModel) => (
+                  <div className="tag">{tag.label}</div>
+                ))
+              }
+              <AutoSuggest<TagModel>
+                getLabel={(suggestion: TagModel) => suggestion.label}
+                fetchSuggestions={this.getTags}
+                onSelect={this.handleSelect}
+                placeholder="tag..."
               />
             </div>
           ) : <Loading />

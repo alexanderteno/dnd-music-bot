@@ -26,13 +26,26 @@ class TagsRepository {
                         resolve(tagModels);
                     }
                 }
-            )
+            );
+            connection.end();
         })
     }
 
     static getTags = () => {
         return new Promise((resolve, reject) => {
-            resolve([]); // TODO: Make this properly resolve all tags
+            const connection = createConnection();
+            connection.query(
+                `SELECT * from tags`,
+                [],
+                (err, results) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            );
+            connection.end();
         })
     }
 }

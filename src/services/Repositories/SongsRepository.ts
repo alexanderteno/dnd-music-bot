@@ -17,7 +17,7 @@ export default class SongsRepository {
                     }
                 }
             )
-
+            connection.end();
         })
     }
 
@@ -77,6 +77,7 @@ export default class SongsRepository {
                     resolve(song);
                 }
             );
+            connection.end();
         })
     }
 

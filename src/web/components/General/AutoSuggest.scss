@@ -11,7 +11,10 @@
         position: absolute;
         background: white;
         border: 1px solid black;
+        box-sizing: border-box;
         border-radius: 3px;
+        max-height: 162px;
+        overflow-y: scroll;
 
         .suggestion {
             padding: 0.5rem;
