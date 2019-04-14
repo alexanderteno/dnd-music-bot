@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Route, Router, Switch } from 'react-router';
-import { Link } from 'react-router-dom';
 import applicationHistory from '../History';
-import LoginPage from './LoginPage/LoginPage';
-import PrivateRoute from './Utilities/PrivateRoute';
 import Dashboard from './Dashboard/Dashboard';
 import Songs from './Songs/Songs';
 import ChannelSwitcher from './ChannelSwitcher/ChannelSwitcher';
 import VolumeSlider from './VolumeSlider/VolumeSlider';
 import Navigation from './Navigation/Navigation';
 import './App.scss';
-import AutoSuggest from './General/AutoSuggest';
 
 export const App = () => (
   <Router history={applicationHistory.history}>
@@ -27,7 +23,6 @@ export const App = () => (
           <Route path="/songs" exact={true} component={Songs} />
         </Switch>
       </div>
-      <AutoSuggest<string> getLabel={(suggestion: string) => suggestion} suggestions={["Algeria", "Alaska", "Canada", "Camaroon"]} onSelect={(suggestion) => { }} />
     </div>
   </Router>
 );

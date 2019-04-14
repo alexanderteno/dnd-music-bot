@@ -3,11 +3,16 @@ import SongTagModel from "../../web/models/SongTagModel";
 
 class TagsRepository {
     static getTagsBySongId = (songId: number) => {
-        console.log('This was entered');
         return new Promise((resolve, reject) => {
             const connection = createConnection();
             connection.query(
-                'SELECT songs.*, tags.*, song_tags.songTagId FROM songs INNER JOIN song_tags ON songs.songId = song_tags.songId INNER JOIN tags ON song_tags.tagId = tags.tagId WHERE songs.songId = ?',
+                `
+                    SELECT songs.*, tags.*, song_tags.songTagId 
+                    FROM songs 
+                        INNER JOIN song_tags ON songs.songId = song_tags.songId 
+                        INNER JOIN tags ON song_tags.tagId = tags.tagId 
+                    WHERE songs.songId = ?
+                `,
                 [songId],
                 (err, results) => {
                     if (err) {

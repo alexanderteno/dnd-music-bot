@@ -1,0 +1,24 @@
+.auto-suggest {
+
+    input[type=text] {
+        border: none;
+    }
+
+    .items {
+        top: 100%;
+        left: 0;
+        width: 100%;
+        position: absolute;
+        background: white;
+        border: 1px solid black;
+        border-radius: 3px;
+
+        .suggestion {
+            padding: 0.5rem;
+            &.selected {
+                background-color: skyblue;
+            }
+        }
+
+    }
+}

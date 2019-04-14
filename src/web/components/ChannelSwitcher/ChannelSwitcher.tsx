@@ -30,7 +30,7 @@ export default class ChannelSwitcher extends Component<{}, ChannelSwitcherState>
             });
     }
 
-    private joinChannel = (channelId: string) => {
+    joinChannel = (channelId: string) => {
         ChannelService.join(channelId)
             .then(response => {
                 if (response.status === 'joined') {
@@ -39,7 +39,19 @@ export default class ChannelSwitcher extends Component<{}, ChannelSwitcherState>
             })
     }
 
+    getSortedChannels = (): ChannelModel[] => {
+        this.state.channels.sort((a: ChannelModel, b: ChannelModel) => {
+            if (a.type !== b.type) {
+                return a.type === 'voice' ? -1 : 1;
+            } else {
+                return a.id < b.id ? -1 : 1
+            }
+        })
+        return this.state.channels;
+    }
+
     render() {
+
         return (
             <Container
                 className="channel-switcher"
@@ -50,7 +62,7 @@ export default class ChannelSwitcher extends Component<{}, ChannelSwitcherState>
             >
                 <div className="channels">
                     {
-                        this.state.channels && this.state.channels.map((channel: ChannelModel) => (
+                        this.state.channels && this.getSortedChannels().map((channel: ChannelModel) => (
                             <Channel
                                 key={channel.id}
                                 {...channel}

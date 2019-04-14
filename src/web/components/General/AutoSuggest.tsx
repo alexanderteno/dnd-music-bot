@@ -1,4 +1,9 @@
 import React, { Component } from 'react';
+import './AutoSuggest.scss';
+
+const clamp = (value: number, min: number, max: number): number => {
+    return Math.min(Math.max(value, min), max);
+}
 
 const KEYS = {
     ENTER: 13,
@@ -7,15 +12,33 @@ const KEYS = {
 }
 
 interface AutoSuggestProps<T> {
-    suggestions?: T[]
-    fetchSuggestions?: () => void;
     getLabel: (suggestion: T) => string;
     onSelect: (suggestion: T) => void;
+    suggestions?: T[]
+    newSuggestion?: (label: string) => void;
+    fetchSuggestions?: () => void;
 }
 
 interface AutoSuggestState<T> {
     suggestions: undefined | T[];
     filter: string;
+    selectedIndex: number;
+}
+
+const filterSuggestions = <T extends {}>(suggestions: T[], filter: string, getLabel: (suggestion: T) => string): T[] => {
+    if (!filter) {
+        return [];
+    } else {
+        return suggestions.filter((suggestion: T) => {
+            const label = getLabel(suggestion).toLowerCase();
+            return label.indexOf(filter) !== -1;
+        })
+    }
+}
+
+const getFilteredSuggestions = <T extends {}>(props: AutoSuggestProps<T>, state: AutoSuggestState<T>): T[] | undefined => {
+    const suggestions = props.fetchSuggestions ? state.suggestions : props.suggestions;
+    return filterSuggestions(suggestions, state.filter, props.getLabel);
 }
 
 class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>> {
@@ -25,25 +48,44 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
         this.state = {
             suggestions: undefined,
             filter: undefined,
+            selectedIndex: -1,
         }
     }
 
+    makeSelection = (suggestion: T) => {
+        this.setState({ filter: undefined, selectedIndex: -1 }, () => {
+            this.props.onSelect(suggestion);
+        });
+    }
+
     handleKeyDown = (e: React.KeyboardEvent) => {
-
-        // var x = document.getElementById(this.id + "autocomplete-list");
-        // if (x) x = x.getElementsByTagName("div");
-
         if (e.keyCode == KEYS.DOWN) {
-            // currentFocus++;
-            // addActive(x)
+            this.setState((prevState, props) => {
+                const suggestions = getFilteredSuggestions(props, prevState);
+                const nextIndex = (prevState.selectedIndex + 1) % suggestions.length;
+                return ({
+                    ...prevState,
+                    selectedIndex: clamp(nextIndex, 0, suggestions.length - 1),
+                });
+            });
         } else if (e.keyCode == KEYS.UP) {
-            // currentFocus--;
-            // addACtive(x)
+            this.setState((prevState, props) => {
+                const suggestions = getFilteredSuggestions(props, prevState);
+                const nextIndex = ((prevState.selectedIndex - 1) + suggestions.length) % suggestions.length;
+                return ({
+                    ...prevState,
+                    selectedIndex: clamp(nextIndex, 0, suggestions.length - 1),
+                });
+            });
         } else if (e.keyCode == KEYS.ENTER) {
             e.preventDefault();
-            // if (currentFocus > -1) {
-            // if (x) x[currentFocus.click()];
-            // }
+            if (getFilteredSuggestions(this.props, this.state)) {
+
+            } else {
+                if (this.props.newSuggestion) {
+                    this.props.newSuggestion(this.state.filter)
+                }
+            }
         }
     }
 
@@ -52,32 +94,24 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
         this.setState({ filter: filter ? filter.toLowerCase() : undefined });
     }
 
-    filterSuggestions = (suggestions: T[], filter: string): T[] => {
-        if (!filter) {
-            return [];
-        } else {
-            return suggestions.filter((suggestion: T) => {
-                const label = this.props.getLabel(suggestion).toLowerCase();
-                return label.indexOf(filter) !== -1;
-            })
-        }
-    }
-
     render() {
 
-        const suggestions = this.props.fetchSuggestions ? this.state.suggestions : this.props.suggestions;
-        const filteredSuggestions = this.filterSuggestions(suggestions, this.state.filter);
+        const filteredSuggestions = getFilteredSuggestions(this.props, this.state);
 
         return (
             <div className="auto-suggest">
                 <input type="text" onKeyDown={this.handleKeyDown} onInput={this.handleInput}></input>
-                <div className="autocomplete-items">
+                <div className="items">
                     {
-                        filteredSuggestions.map((suggestion: T) => {
+                        filteredSuggestions.map((suggestion: T, index: number) => {
                             const label = this.props.getLabel(suggestion);
+                            const className = ['suggestion'];
+                            if (index === this.state.selectedIndex) {
+                                className.push('selected');
+                            }
                             return (
                                 <div
-                                    className="autocomplete-item"
+                                    className={className.join(' ')}
                                     key={label}
                                     onClick={() => this.props.onSelect(suggestion)}
                                 >

@@ -6,7 +6,7 @@ const channelsGet: RequestHandler = (_: Request, response: Response): void => {
   const channels = interfaceManager.client.channels.map((channel: Discord.Channel & { name: string }) => ({
     type: channel.type,
     id: channel.id,
-    name: channel.name
+    name: channel.name,
   }));
   response.json(channels);
 }

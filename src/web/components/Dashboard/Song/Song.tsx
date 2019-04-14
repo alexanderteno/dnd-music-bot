@@ -8,6 +8,7 @@ import TagModel from '../../../models/TagModel';
 import Loading from '../../General/Loading';
 import { debounce } from 'lodash';
 import './Song.scss';
+import AutoSuggest from '../../General/AutoSuggest';
 
 const WAIT_TIME = 1000;
 
@@ -40,7 +41,11 @@ class SongTags extends Component<SongTagsProps, SongTagsState> {
         {
           tags ? (
             <div className="input-control">
-              <input type="text"></input>
+              <AutoSuggest<string>
+                getLabel={(suggestion: string) => suggestion}
+                suggestions={["Algeria", "Alaska", "Canada", "Camaroon"]}
+                onSelect={(suggestion) => { }}
+              />
             </div>
           ) : <Loading />
         }
