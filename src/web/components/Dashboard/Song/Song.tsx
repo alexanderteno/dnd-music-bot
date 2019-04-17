@@ -4,72 +4,12 @@ import Icon from '../../General/Icon';
 import SongsService from '../../../../services/WebApi/SongsService';
 import PlayerService from '../../../../services/WebApi/PlayerService';
 import SongModel from '../../../models/SongModel';
-import TagModel from '../../../models/TagModel';
-import Loading from '../../General/Loading';
+
 import { debounce } from 'lodash';
-import AutoSuggest from '../../General/AutoSuggest';
-import TagService from '../../../../services/WebApi/TagService';
 import './Song.scss';
+import SongTags from './SongTags';
 
 const WAIT_TIME = 1000;
-
-interface SongTagsProps { songId: number }
-interface SongTagsState { tags: TagModel[] | undefined }
-
-class SongTags extends Component<SongTagsProps, SongTagsState> {
-
-  constructor(props: SongTagsProps) {
-    super(props);
-    this.state = {
-      tags: undefined,
-    }
-  }
-
-  componentDidMount() {
-    SongsService.getTagsBySongId(this.props.songId)
-      .then((tags: TagModel[]) => {
-        this.setState({ tags });
-      });
-  }
-
-  getTags = (): Promise<TagModel[]> => {
-    return TagService.getTags();
-  }
-
-  handleSelect = (tag: TagModel) => {
-    
-  }
-
-  render() {
-
-    const { tags } = this.state;
-    console.log({ tags });
-
-    return (
-      <>
-        <label className="input-label">Tags:</label>
-        {
-          (tags !== undefined) ? (
-            <div className="input-control tags">
-              {
-                tags.map((tag: TagModel) => (
-                  <div className="tag">{tag.label}</div>
-                ))
-              }
-              <AutoSuggest<TagModel>
-                getLabel={(suggestion: TagModel) => suggestion.label}
-                fetchSuggestions={this.getTags}
-                onSelect={this.handleSelect}
-                placeholder="tag..."
-              />
-            </div>
-          ) : <Loading />
-        }
-      </>
-    )
-  }
-
-}
 
 interface SongProps extends SongModel {
   updateSong: (song: SongModel) => void;

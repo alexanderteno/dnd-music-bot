@@ -14,9 +14,8 @@ const KEYS = {
 
 interface AutoSuggestProps<T> {
     getLabel: (suggestion: T) => string;
-    onSelect: (suggestion: T) => void;
+    onSelect: (suggestion: T | string) => void;
     fetchSuggestions?: () => Promise<T[]>;
-    newSuggestion?: (label: string) => void;
     placeholder?: string;
     suggestions?: T[]
 }
@@ -73,11 +72,11 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
 
     handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if ((e.keyCode === KEYS.UP) || e.keyCode === KEYS.DOWN) {
+            const keyCode = e.keyCode;
             this.setState((prevState, props) => {
                 const suggestions = getFilteredSuggestions(props, prevState);
-                const delta = e.keyCode === KEYS.UP ? -1 : 1;
+                const delta = keyCode === KEYS.UP ? -1 : 1;
                 const nextIndex = ((prevState.selectedIndex + delta) + suggestions.length) % suggestions.length
-
                 return ({
                     ...prevState,
                     selectedIndex: clamp(nextIndex, 0, suggestions.length - 1),
@@ -85,15 +84,21 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
             });
         } else if (e.keyCode === KEYS.ENTER) {
             e.preventDefault();
-            if (getFilteredSuggestions(this.props, this.state)) {
-
+            const suggestions = getFilteredSuggestions(this.props, this.state);
+            if (this.state.selectedIndex > -1) {
+                this.props.onSelect(suggestions[this.state.selectedIndex]);
             } else {
-                if (this.props.newSuggestion) {
-                    this.props.newSuggestion(this.state.filter)
-                }
+                this.props.onSelect(e.currentTarget.value);
             }
-        } else if (e.keyCode === KEYS.ESCAPE) {
+            e.currentTarget.value = '';
             e.currentTarget.blur();
+        } else if (e.keyCode === KEYS.ESCAPE) {
+            const suggestions = getFilteredSuggestions(this.props, this.state);
+            if (this.state.showSuggestions && (suggestions.length > 0)) {
+                this.setState({ showSuggestions: false });
+            } else {
+                e.currentTarget.blur();
+            }
         }
     }
 
@@ -104,9 +109,12 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
 
     handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
         const filter = e.currentTarget.value;
+        const currentTarget = e.currentTarget;
         this.setState({
             filter: filter ? filter : undefined,
             showSuggestions: true,
+        }, () => {
+            currentTarget.select();
         });
     }
 
@@ -114,6 +122,7 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
         this.setState({
             filter: undefined,
             showSuggestions: false,
+            selectedIndex: -1,
         });
     }
 
@@ -132,7 +141,7 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
                     placeholder={this.props.placeholder}
                 />
                 {
-                    this.state.showSuggestions && (
+                    (this.state.showSuggestions && (filteredSuggestions.length > 0)) && (
                         <div className="items">
                             {
                                 filteredSuggestions.map((suggestion: T, index: number) => {
