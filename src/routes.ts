@@ -23,6 +23,7 @@ const registerRoutes = (express: Express) => {
   express.route('/api/songs/:songId/play')
     .post(SongsController.songPlay);
   express.route('/api/songs/:songId/tags')
+    .post(TagsController.tagsPost)
     .get(TagsController.tagsGet);
 
   /* Tags ACtions */

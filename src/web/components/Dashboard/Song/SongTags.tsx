@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import TagModel from '../../../models/TagModel';
+import TagModel, { isTagModel } from '../../../models/TagModel';
 import Loading from '../../General/Loading';
 import AutoSuggest from '../../General/AutoSuggest';
 import TagService from '../../../../services/WebApi/TagService';
 import SongsService from '../../../../services/WebApi/SongsService';
+import { cloneDeep } from 'lodash';
+import './SongTags.scss';
 
 interface SongTagsProps { songId: number }
 interface SongTagsState { tags: TagModel[] | undefined }
@@ -28,8 +30,20 @@ export default class SongTags extends Component<SongTagsProps, SongTagsState> {
         return TagService.getTags();
     }
 
-    handleSelect = (tag: TagModel) => {
+    hasTag = (tag: TagModel): boolean => {
+        return this.state.tags.some((stateTag: TagModel) => stateTag.tagId === tag.tagId);
+    }
 
+    handleSelect = async (selectedTag: TagModel | string) => {
+        const hasTag = isTagModel(selectedTag) && this.hasTag(selectedTag);
+        if (!hasTag) {
+            const newTag = await SongsService.addTag(this.props.songId, selectedTag);
+            this.setState((prevState) => {
+                const tags = cloneDeep(prevState.tags);
+                tags.push(newTag);
+                return { tags };
+            })
+        }
     }
 
     render() {
@@ -42,7 +56,12 @@ export default class SongTags extends Component<SongTagsProps, SongTagsState> {
                         <div className="input-control tags">
                             {
                                 tags.map((tag: TagModel) => (
-                                    <div key={tag.tagId} className="tag">{tag.label}</div>
+                                    <div key={tag.tagId} className="tag">
+                                        <span className="tag-content">
+                                            {tag.label}
+                                        </span>
+                                        <button className="remove-tag material-icons" onClick={() => console.log(tag.tagId)}>close</button>
+                                    </div>
                                 ))
                             }
                             <AutoSuggest<TagModel>

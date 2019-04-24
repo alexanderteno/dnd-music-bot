@@ -4,10 +4,9 @@ import Icon from '../../General/Icon';
 import SongsService from '../../../../services/WebApi/SongsService';
 import PlayerService from '../../../../services/WebApi/PlayerService';
 import SongModel from '../../../models/SongModel';
-
 import { debounce } from 'lodash';
-import './Song.scss';
 import SongTags from './SongTags';
+import './Song.scss';
 
 const WAIT_TIME = 1000;
 

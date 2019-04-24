@@ -70,7 +70,7 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
         });
     }
 
-    handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if ((e.keyCode === KEYS.UP) || e.keyCode === KEYS.DOWN) {
             const keyCode = e.keyCode;
             this.setState((prevState, props) => {
@@ -102,12 +102,12 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
         }
     }
 
-    handleInput = (e: React.FormEvent<HTMLInputElement>) => {
+    handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
         const filter = e.currentTarget.value;
         this.setState({ filter: filter ? filter.toLowerCase() : undefined });
     }
 
-    handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
         const filter = e.currentTarget.value;
         const currentTarget = e.currentTarget;
         this.setState({
@@ -118,7 +118,7 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
         });
     }
 
-    handleBlur = (_: React.FocusEvent<HTMLInputElement>) => {
+    handleBlur = (_: React.FocusEvent<HTMLTextAreaElement>) => {
         this.setState({
             filter: undefined,
             showSuggestions: false,
@@ -131,14 +131,21 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
         const filteredSuggestions = getFilteredSuggestions(this.props, this.state);
 
         return (
-            <div className="auto-suggest">
-                <input
-                    type="text"
+            <>
+                <textarea
+                    className="auto-suggest"
+                    rows={1}
+                    autoComplete="false"
+                    autoCorrect="off"
+                    role="combobox"
+                    aria-autocomplete="list"
+                    spellCheck={false}
                     onKeyDown={this.handleKeyDown}
                     onInput={this.handleInput}
                     onBlur={this.handleBlur}
                     onFocus={this.handleFocus}
                     placeholder={this.props.placeholder}
+
                 />
                 {
                     (this.state.showSuggestions && (filteredSuggestions.length > 0)) && (
@@ -154,7 +161,9 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
                                         <div
                                             className={className.join(' ')}
                                             key={label}
-                                            onClick={() => this.makeSelection(suggestion)}
+                                            onMouseDown={() => {
+                                                this.makeSelection(suggestion);
+                                            }}
                                             onMouseEnter={() => this.setState({ selectedIndex: index })}
                                         >
                                             {label}
@@ -165,7 +174,7 @@ class AutoSuggest<T> extends Component<AutoSuggestProps<T>, AutoSuggestState<T>>
                         </div>
                     )
                 }
-            </div>
+            </>
         );
     }
 

@@ -4,22 +4,32 @@ import TagModel from '../../web/models/TagModel';
 
 export default class SongsService {
 
-    static getSongs = async (): Promise<null | SongModel[]> => {
-        return fetch(`${WebConstants.API_URL}/songs`)
-            .then((response) => {
-                return response.json();
-            });
+    static addTag = async (songId: number, tag: TagModel | string): Promise<TagModel> => {
+        const response = await fetch(`${WebConstants.API_URL}/songs/${songId}/tags`, {
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            },
+            method: 'POST',
+            cache: 'no-cache',
+            body: JSON.stringify({
+                tag,
+            }),
+        });
+        return response.json();
+    }
+
+    static getSongs = async (): Promise<SongModel[]> => {
+        const response = await fetch(`${WebConstants.API_URL}/songs`)
+        return response.json();
     }
 
     static getTagsBySongId = async (songId: number): Promise<TagModel[]> => {
-        return fetch(`${WebConstants.API_URL}/songs/${songId}/tags`)
-            .then((response) => {
-                return response.json();
-            });
+        const response = await fetch(`${WebConstants.API_URL}/songs/${songId}/tags`)
+        return response.json();
     }
 
-    static putSong = async (song: SongModel): Promise<null | SongModel> => {
-        return fetch(`${WebConstants.API_URL}/songs/${song.songId}`, {
+    static putSong = async (song: SongModel): Promise<SongModel> => {
+        const response = await fetch(`${WebConstants.API_URL}/songs/${song.songId}`, {
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
             },
@@ -28,25 +38,15 @@ export default class SongsService {
                 song
             }),
         })
-            .then((response) => {
-                return response.json();
-            })
-            .catch((err) => {
-                throw err;
-            });
+        return response.json();
     }
 
     static postPlay = async (songId: number): Promise<void> => {
-        fetch(`${WebConstants.API_URL}/songs/${songId}/play`, {
+        await fetch(`${WebConstants.API_URL}/songs/${songId}/play`, {
             method: 'POST',
             cache: 'no-cache',
-        })
-            .then(() => {
-                // Song Started
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        });
+        return;
     }
 
 }

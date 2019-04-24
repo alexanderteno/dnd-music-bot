@@ -1,29 +1,22 @@
 import WebConstants from '../../constants/WebConstants';
+import { Result } from 'range-parser';
 
 export default class PlayerService {
 
     static postStop = async (): Promise<void> => {
-        fetch(`${WebConstants.API_URL}/player/stop`, {
+        await fetch(`${WebConstants.API_URL}/player/stop`, {
             method: 'POST',
         })
-            .then((result) => {
-                console.log(result);
-            });
+        return;
     }
 
     static getVolume = async (): Promise<number | undefined> => {
-        return fetch(`${WebConstants.API_URL}/player/volume`)
-            .then((result) => {
-                return result.json();
-            })
-            .then((responseBody: { volume: number | undefined }) => {
-                return responseBody.volume;
-            });
+        const response = await fetch(`${WebConstants.API_URL}/player/volume`);
+        return response.json();
     }
 
     static setVolume = async (volume: number): Promise<number> => {
-
-        return fetch(`${WebConstants.API_URL}/player/volume`, {
+        const response = await fetch(`${WebConstants.API_URL}/player/volume`, {
             method: 'POST',
             body: JSON.stringify({ volume }),
             cache: 'no-cache',
@@ -31,12 +24,7 @@ export default class PlayerService {
                 "Content-Type": "application/json",
             }
         })
-            .then((result) => {
-                return result.json();
-            })
-            .then((responseBody: { volume: number }) => {
-                return responseBody.volume;
-            });
+        return response.json();
     }
 
     static getStatus = async (): Promise<any> => {

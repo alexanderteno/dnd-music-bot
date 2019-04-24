@@ -10,20 +10,17 @@ export default class PlayerController {
 
   static getVolume: RequestHandler = (_: Request, response: Response): void => {
     const streamDispatcher = interfaceManager.streamService.streamDispatcher;
-    if (streamDispatcher) {
-      response.json({ volume: streamDispatcher.volume });
-    } else {
-      response.json({ volume: undefined });
-    }
+    const volume = streamDispatcher ? streamDispatcher.volume : undefined;
+    response.json(volume);
   }
 
   static postVolume: RequestHandler = (request: Request, response: Response): void => {
     const streamDispatcher = interfaceManager.streamService.streamDispatcher;
     if (streamDispatcher) {
       streamDispatcher.setVolume(request.body.volume !== undefined ? request.body.volume : 1);
-      response.json({ volume: streamDispatcher.volume });
+      response.json(streamDispatcher.volume);
     } else {
-      response.json({ volume: undefined });
+      response.json(undefined);
     }
   }
 
