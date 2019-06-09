@@ -1,6 +1,7 @@
 import { RequestHandler, Request, Response } from 'express';
 import TagModel from '../web/models/TagModel';
 import TagsRepository from '../services/Repositories/TagsRepository';
+import { Result } from 'range-parser';
 
 export default class TagsController {
 
@@ -22,6 +23,18 @@ export default class TagsController {
             response.json(tags);
         } catch (err) {
             throw err;
+        }
+    }
+
+    static songTagDelete: RequestHandler = async (request: Request, response: Response) => {
+        try {
+            const songTagId = parseInt(request.params.songTagId);
+            const returnId = await TagsRepository.deleteSongTagBySongTagId(songTagId);
+            response.json(returnId);
+        } catch (err) {
+            response
+                .status(500)
+                .json(err);
         }
     }
 

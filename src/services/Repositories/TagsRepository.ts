@@ -15,7 +15,6 @@ class TagsRepository {
             await asyncInsert<TagModel>(`INSERT INTO tags (label) VALUES (?)`, [requestTag]);
         const tag = await asyncQueryFirst<TagModel>(`SELECT * FROM tags WHERE tagId = ?`, [tagId]);
 
-        console.log({ tag });
         const songTagExists = !!(await asyncQueryFirst<SongTagModel>(`SELECT * FROM song_tags WHERE songId = ? AND tagId = ?`, [songId, tag.tagId]));
 
         if (!songTagExists) {
@@ -44,6 +43,17 @@ class TagsRepository {
         const tags = asyncQuery<TagModel>(`SELECT * FROM tags`, []);
         return tags;
     }
+
+    static deleteSongTagBySongTagId = async (songTagId: number): Promise<number> => {
+        const result: any = await asyncQuery<void>(`DELETE FROM song_tags WHERE songTagId=?`, [songTagId]);
+        if (result.affectedRows) {
+            return songTagId;
+        }
+        else {
+            throw `Could not DELETE ${songTagId}`;
+        }
+    }
+
 }
 
 export default TagsRepository;

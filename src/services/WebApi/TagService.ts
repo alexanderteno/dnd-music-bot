@@ -10,4 +10,16 @@ export default class TagService {
             })
     }
 
+    static deleteSongTag = (songTagId: number): Promise<number> => {
+        return fetch(
+            `${WebConstants.API_URL}/songTags/${songTagId}`,
+            {
+                method: 'DELETE',
+            }
+        )
+            .then((response) => {
+                return response.json();
+            });
+    }
+
 }

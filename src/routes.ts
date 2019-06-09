@@ -26,9 +26,12 @@ const registerRoutes = (express: Express) => {
     .post(TagsController.tagsPost)
     .get(TagsController.tagsGet);
 
-  /* Tags ACtions */
+  /* Tags Actions */
   express.route('/api/tags')
     .get(TagsController.tagsGet);
+
+  express.route('/api/songTags/:songTagId')
+    .delete(TagsController.songTagDelete);
 
   /* Player Actions */
   express.route('/api/player/stop')

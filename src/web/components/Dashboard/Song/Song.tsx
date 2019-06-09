@@ -7,6 +7,9 @@ import SongModel from '../../../models/SongModel';
 import { debounce } from 'lodash';
 import SongTags from './SongTags';
 import './Song.scss';
+import TagModel from '../../../models/TagModel';
+import TagService from '../../../../services/WebApi/TagService';
+import SongTagModel from '../../../models/SongTagModel';
 
 const WAIT_TIME = 1000;
 
@@ -45,6 +48,20 @@ class Song extends Component<SongProps> {
     this.updateTitle(e.currentTarget.innerText);
   }
 
+  handleDeleteTag = (songTag: SongTagModel, onSuccess?: (response?: any) => void, onError?: (err: Error) => void) => {
+    TagService.deleteSongTag(songTag.songTagId)
+      .then((returnId) => {
+        if (onSuccess) {
+          onSuccess(returnId);
+        }
+      })
+      .catch((err) => {
+        if (onError) {
+          onError(err);
+        }
+      })
+  }
+
   render() {
 
     return (
@@ -63,7 +80,7 @@ class Song extends Component<SongProps> {
             <div className="input-control">TODO</div>
             <label className="input-label">Visualization:</label>
             <div className="input-control">TODO</div>
-            <SongTags songId={this.props.songId} />
+            <SongTags songId={this.props.songId} handleDeleteTag={this.handleDeleteTag} />
           </div>
         </div>
         <div className="preview">
