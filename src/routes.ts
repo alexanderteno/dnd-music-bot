@@ -30,6 +30,9 @@ const registerRoutes = (express: Express) => {
   express.route('/api/tags')
     .get(TagsController.tagsGet);
 
+  express.route('/api/playlists')
+    .get(TagsController.playlistsGet);
+
   express.route('/api/songTags/:songTagId')
     .delete(TagsController.songTagDelete);
 

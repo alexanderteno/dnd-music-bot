@@ -1,5 +1,6 @@
 import WebConstants from "../../constants/WebConstants";
 import TagModel from "../../web/models/TagModel";
+import PlaylistModel from "../../web/models/PlaylistModel";
 
 export default class TagService {
 
@@ -16,6 +17,15 @@ export default class TagService {
             {
                 method: 'DELETE',
             }
+        )
+            .then((response) => {
+                return response.json();
+            });
+    }
+
+    static getPlaylists = async (): Promise<PlaylistModel[]> => {
+        return fetch(
+            `${WebConstants.API_URL}/playlists`,
         )
             .then((response) => {
                 return response.json();

@@ -5,6 +5,15 @@ import { Result } from 'range-parser';
 
 export default class TagsController {
 
+    static playlistsGet: RequestHandler = async (_: Request, response: Response) => {
+        try {
+            const playlists = await TagsRepository.getPlaylists();
+            response.json(playlists);
+        } catch (err) {
+            response.status(500).json(err);
+        }
+    }
+
     static tagsPost: RequestHandler = async (request: Request, response: Response) => {
         const songId = parseInt(request.params.songId);
         try {

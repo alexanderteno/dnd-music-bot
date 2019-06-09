@@ -6,6 +6,7 @@ import Songs from './Songs/Songs';
 import ChannelSwitcher from './ChannelSwitcher/ChannelSwitcher';
 import VolumeSlider from './VolumeSlider/VolumeSlider';
 import Navigation from './Navigation/Navigation';
+import Playlists from './Playlists/Playlists';
 import './App.scss';
 
 export const App = () => (
@@ -21,6 +22,7 @@ export const App = () => (
           {/* <Route path="/login" exact={true} component={LoginPage} /> */}
           <Route path="/" exact={true} component={Dashboard} />
           <Route path="/songs" exact={true} component={Songs} />
+          <Route path="/playlists" exact={true} component={Playlists} />
         </Switch>
       </div>
     </div>

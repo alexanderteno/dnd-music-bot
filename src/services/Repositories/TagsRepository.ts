@@ -1,8 +1,16 @@
 import TagModel, { isTagModel } from "../../web/models/TagModel";
 import { asyncQueryFirst, asyncQuery, asyncInsert } from "./util/AsyncUtil";
 import SongTagModel from "../../web/models/SongTagModel";
+import PlaylistModel from "../../web/models/PlaylistModel";
 
 class TagsRepository {
+
+    static getPlaylists = async (): Promise<PlaylistModel[]> => {
+        return await asyncQueryFirst<{ label: string, tagId: number }[]>(
+            'SELECT DISTINCT tags.label, tags.tagId FROM song_tags LEFT JOIN tags ON song_tags.tagId = tags.tagId',
+            [],
+        );
+    }
 
     static createSongTag = async (songId: number, tagId: number): Promise<SongTagModel> => {
         return await asyncQueryFirst<SongTagModel>(`INSERT INTO song_tags (songId, tagId) VALUES (?, ?)`, [songId, tagId]);
